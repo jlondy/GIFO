@@ -1,0 +1,23 @@
+.account-component{
+    text-align: center;
+    padding-top: 100px;
+}
+.empty-account{
+    margin-top: 25px;
+    margin-right: 400px;
+    margin-left: 400px;
+    background-color: #0e151c;
+    border-style: dashed;
+    border-color: #3A8296;
+}
+.account-paper {
+    height: 450px;
+    background-color: #0e151c;
+}
+.account-results{
+    padding-top: 25px;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
