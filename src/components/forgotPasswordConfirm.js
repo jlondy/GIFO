@@ -17,34 +17,39 @@ class ForgotPasswordConfirm extends Component {
 		super();
 		this.state = {
             code: "", // users input
-            errorMessage: "",
-            emailSent: false,
-            redirection: false
+            errorMessage: "", // error message for user
+            emailSent: false, // checking is email was sent 
+            redirection: false // checking to redirect to next page or not
 		};
 		this.handleSendCode = this.handleSendCode.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleCodeCheck = this.handleCodeCheck.bind(this);
     }
     
+    // handling user code changes
     handleChange = (user) => {
 		this.setState({
 			code: user.target.value
 		});
     };
 
+    // checking if code is the same
     handleCodeCheck(e) {
         e.preventDefault();
         const self = this;
         
+        // input code matches redirect to next page
         if(this.state.code === localStorage.getItem('uuid')){
             localStorage.removeItem('uuid');
             self.setState({redirection: true});
-        }   
+        }  
+        // invalid input code 
         else{
             self.setState({errorMessage: "Invalid Code"})
         }  
     }
 
+    // handling emailing the code to the user
     handleSendCode(e) {
         e.preventDefault();
         const self = this;
@@ -61,37 +66,45 @@ class ForgotPasswordConfirm extends Component {
         var uuid = uuidv4();
         localStorage.setItem('uuid', uuid);
 
+        // setting up email with verification code
         var params = {
             Message: 'Verification Code: ' + uuid,
             TopicArn: 'arn:aws:sns:us-east-1:998665822610:ForgotPassword'
         };
         
+        // publishing email verification code to user
         var publishToUser = new AWS.SNS({apiVersion: '2010-03-31'});
         publishToUser.publish(params, (error, data) => {
+            // error occurred
             if(error){
                 console.log(error);
             }
+            // published successfully to the user
+            // now delete the user from the subscription list
             else{
-                console.log("published", data);
+                // grabbing users subarn
                 var topicArn = { 
-                    TopicArn : process.env.REACT_APP_AWS_TOPIC_ARN
+                    TopicArn : 'arn:aws:sns:us-east-1:998665822610:ForgotPassword'
                 };
                 var subList = new AWS.SNS({apiVersion: '2010-03-31'});
                 subList.listSubscriptionsByTopic(topicArn, (error, data) => {
+                    // error occurred
                     if(error){
                         console.log("error", error);
                     }
+                    // successfully got users subarn
                     else{
-                        console.log("sub list", data);
                         var subArn = { 
                             SubscriptionArn : data.Subscriptions[0].SubscriptionArn
                         };
-                       
+                        // unsubcribe the user from the service
                         var unsubscribeUser = new AWS.SNS({apiVersion: '2010-03-31'});
                         unsubscribeUser.unsubscribe(subArn, (error, data) => {
+                            // error occurred
                             if(error){
                                 console.log("error", error);
                             }
+
                             else{
                                 console.log("unsub", data);
                             }
@@ -115,7 +128,9 @@ class ForgotPasswordConfirm extends Component {
     return (
         <div>
             <Navigation />
+            
             {this.state.emailSent ? 
+            /* code has been sent screen */
                 <div className="forgot-password">
                     <Paper style={{ backgroundColor: "#0e151c" }} className="forgot-password-paper" elevation={24} spacing={16}>
                         <Typography variant="h3" style={{ color: "white", paddingTop: "25px", textAlign: "center" }}>Enter in the verification code</Typography>
@@ -136,9 +151,10 @@ class ForgotPasswordConfirm extends Component {
                     </Paper>
                 </div>
             :
+            /* code has not been sent screen */
                 <div className="forgot-password">
                     <Paper style={{ backgroundColor: "#0e151c" }} className="forgot-password-paper" elevation={24} spacing={16}>
-                        <Typography variant="h3" style={{ color: "white", paddingTop: "25px", textAlign: "center" }}>Click below to recieve verification code in your email!</Typography>
+                        <Typography variant="h5" style={{ color: "white", paddingTop: "25px", textAlign: "center" }}>Please subscribe to use via your email! Once subcribed please click below to recieve a verification code in your email!</Typography>
                         <form onSubmit={this.handleSendCode} style={{ width: "100%", paddingTop: "20px", textAlign: "center" }} autoComplete="off">
                             <FormControl style={{ width: "55%" }}>
                                 <Button type="submit" style={{ color: "black", backgroundColor: "#61dafb" }} color="primary">Code</Button>  

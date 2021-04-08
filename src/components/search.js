@@ -55,8 +55,6 @@ class Search extends Component {
     // handling users inputted search  
     // grabbing gifs to dispaly
     handleSearch = (e) => {   
-       
-
 
         e.preventDefault();
         const self = this; 

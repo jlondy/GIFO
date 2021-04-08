@@ -1,4 +1,5 @@
-// TODO UPDATE USER
+// TODO UPDATE USER 
+// did not get working because the partition and sort key cant be changed
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient({region: "us-east-1"});
 

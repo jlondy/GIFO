@@ -1,13 +1,26 @@
-FROM node:alpine
+# the code below was based on the citation 1 in the readMe file
+FROM node:12.14.1-alpine3.9 as build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY ./package.json ./
+ENV PATH /app/node_modules/.bin:$PATH
 
-RUN npm install
+COPY ./package.json /app/
 
-COPY . .
+RUN npm --silent
 
-EXPOSE 5000
+COPY . /app
 
-CMD ["npm", "start"]
+RUN npm build
+
+FROM nginx:1.17.8-alpine
+
+COPY --from=build /app/build /usr/share/nginx/html
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY nginx/nginx.conf /etc/nginx/conf.d
+
+EXPOSE 3000
+
+CMD ["nginx", "-g", "daemon off;"]

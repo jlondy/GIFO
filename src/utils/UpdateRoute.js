@@ -8,7 +8,7 @@ const UpdateRoute = ({ component: Component, ...rest }) => {
 		<Route
 			{...rest}
 			render={(props) =>
-				!!localStorage.getItem('updateUser') === true ? <Component {...props} /> : <Redirect to="/login" />}
+				!!localStorage.getItem("updateUser") === true ? <Component {...props} /> : <Redirect to="/login" />}
 		/>
 	);
 };

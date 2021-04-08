@@ -17,14 +17,15 @@ class ForgotPassword extends Component {
 		super();
 		this.state = {
       email: "", // users input
-      errorMessage: "",
-      redirection: false
+      errorMessage: "", // user does not exist message
+      redirection: false // redirection to forgotPasswordConfirm
 		};
 		this.handleEmailSubmit = this.handleEmailSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
     }
     
+    // handling email input changes
     handleChange = (user) => {
       this.setState({
         [user.target.id]: user.target.value
@@ -53,19 +54,22 @@ class ForgotPassword extends Component {
               sessionToken: process.env.REACT_APP_AWS_SESSION_TOKEN
             });
 
+            // setup subcription
             var params = {
               Protocol: 'email', 
               TopicArn: process.env.REACT_APP_AWS_TOPIC_ARN,
               Endpoint: self.state.email
             };
             
+            // send email to user to subscrib to
             var userSubcribing = new AWS.SNS({apiVersion: '2010-03-31'});
             userSubcribing.subscribe(params, (error, data) => {
+              // error occurred
               if(error){
                 console.log(error);
               }
+              // user recieved email redirect to the next page
               else{
-                console.log("sub", data);
                 localStorage.setItem("updateUser", self.state.email);
                 self.setState({redirection: true});
               }

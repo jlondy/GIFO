@@ -8,7 +8,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 		<Route
 			{...rest}
 			render={(props) =>
-				!!localStorage.getItem('userEmail') === true ? <Component {...props} /> : <Redirect to="/login" />}
+				!!localStorage.getItem("userEmail") === true ? <Component {...props} /> : <Redirect to="/login" />}
 		/>
 	);
 };

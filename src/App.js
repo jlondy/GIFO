@@ -23,13 +23,13 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/forgotPassword" component={ForgotPassword} />
-          <Route path="/search" component={Search} />
+          
           {/* Updating user from forgot password routes */}
           <UpdateRoute path="/forgotPasswordConfirm" component={ForgotPasswordConfirm} />
           <UpdateRoute path="/updateUser" component={UpdateUser} />
 
-          {/* Routes for users <PrivateRoute path="/search" component={Search} />*/}
-          
+          {/* Routes for users */}
+          <PrivateRoute path="/search" component={Search} />
           <PrivateRoute path="/account" component={Account} />
 
         </Switch>
