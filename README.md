@@ -1,4 +1,4 @@
-# CSCI 4145 Project (GIFO)
+# CSCI 4145 Project, GIFO a GIF storage app.
 
 ## Available Scripts
 
